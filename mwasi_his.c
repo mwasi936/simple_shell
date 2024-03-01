@@ -1,22 +1,32 @@
 #include "shell.h"
 
+/**
+ * mwasi_get_history_file - Gets the history file
+ * @lee_info: Parameter struct
+ * Return: Allocated string containing history file
+ */
 char *mwasi_get_history_file(info_t *lee_info)
 {
-	char *lee_buf, *mwasi_dir;
+	char *lee_buf, *lee_dir;
 
-	mwasi_dir = _getenv(lee_info, "HOME=");
-	if (!mwasi_dir)
+	lee_dir = _getenv(lee_info, "HOME=");
+	if (!lee_dir)
 		return (NULL);
-	lee_buf = malloc(sizeof(char) * (_strlen(mwasi_dir) + _strlen(HIST_FILE) + 2));
+	lee_buf = malloc(sizeof(char) * (_strlen(lee_dir) + _strlen(HIST_FILE) + 2));
 	if (!lee_buf)
 		return (NULL);
 	lee_buf[0] = 0;
-	_strcpy(lee_buf, mwasi_dir);
+	_strcpy(lee_buf, lee_dir);
 	_strcat(lee_buf, "/");
 	_strcat(lee_buf, HIST_FILE);
 	return (lee_buf);
 }
 
+/**
+ * mwasi_write_history - Creates a file, or appends to an existing file
+ * @lee_info: The parameter struct
+ * Return: 1 on success, else -1
+ */
 int mwasi_write_history(info_t *lee_info)
 {
 	ssize_t lee_fd;
@@ -40,6 +50,11 @@ int mwasi_write_history(info_t *lee_info)
 	return (1);
 }
 
+/**
+ * mwasi_read_history - Reads history from file
+ * @lee_info: The parameter struct
+ * Return: Histcount on success, 0 otherwise
+ */
 int mwasi_read_history(info_t *lee_info)
 {
 	int lee_i, lee_last = 0, lee_linecount = 0;
@@ -70,19 +85,26 @@ int mwasi_read_history(info_t *lee_info)
 		if (lee_buf[lee_i] == '\n')
 		{
 			lee_buf[lee_i] = 0;
-			mwasi_build_history_list(lee_info, lee_buf + lee_last, lee_linecount++);
+			build_history_list(lee_info, lee_buf + lee_last, lee_linecount++);
 			lee_last = lee_i + 1;
 		}
 	if (lee_last != lee_i)
-		mwasi_build_history_list(lee_info, lee_buf + lee_last, lee_linecount++);
+		build_history_list(lee_info, lee_buf + lee_last, lee_linecount++);
 	free(lee_buf);
 	lee_info->histcount = lee_linecount;
 	while (lee_info->histcount-- >= HIST_MAX)
 		delete_node_at_index(&(lee_info->history), 0);
-	mwasi_renumber_history(lee_info);
+	renumber_history(lee_info);
 	return (lee_info->histcount);
 }
 
+/**
+ * mwasi_build_history_list - Adds entry to a history linked list
+ * @lee_info: Structure containing potential arguments
+ * @lee_buf: Buffer
+ * @lee_linecount: The history linecount, histcount
+ * Return: Always 0
+ */
 int mwasi_build_history_list(info_t *lee_info, char *lee_buf, int lee_linecount)
 {
 	list_t *lee_node = NULL;
@@ -96,6 +118,11 @@ int mwasi_build_history_list(info_t *lee_info, char *lee_buf, int lee_linecount)
 	return (0);
 }
 
+/**
+ * mwasi_renumber_history - Renumbers the history linked list after changes
+ * @lee_info: Structure containing potential arguments
+ * Return: The new histcount
+ */
 int mwasi_renumber_history(info_t *lee_info)
 {
 	list_t *lee_node = lee_info->history;
@@ -108,4 +135,3 @@ int mwasi_renumber_history(info_t *lee_info)
 	}
 	return (lee_info->histcount = lee_i);
 }
-

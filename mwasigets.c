@@ -1,5 +1,9 @@
 #include "shell.h"
 
+/**
+ * mwasi_clear_info - Initializes info_t struct
+ * @lee_info: Struct address
+ */
 void mwasi_clear_info(info_t *lee_info)
 {
 	lee_info->arg = NULL;
@@ -8,6 +12,11 @@ void mwasi_clear_info(info_t *lee_info)
 	lee_info->argc = 0;
 }
 
+/**
+ * mwasi_set_info - Initializes info_t struct
+ * @lee_info: Struct address
+ * @lee_av: Argument vector
+ */
 void mwasi_set_info(info_t *lee_info, char **lee_av)
 {
 	int lee_i = 0;
@@ -34,6 +43,11 @@ void mwasi_set_info(info_t *lee_info, char **lee_av)
 	}
 }
 
+/**
+ * mwasi_free_info - Frees info_t struct fields
+ * @lee_info: Struct address
+ * @lee_all: True if freeing all fields
+ */
 void mwasi_free_info(info_t *lee_info, int lee_all)
 {
 	ffree(lee_info->argv);
@@ -57,4 +71,3 @@ void mwasi_free_info(info_t *lee_info, int lee_all)
 		_putchar(BUF_FLUSH);
 	}
 }
-

@@ -69,5 +69,6 @@ char *mwasi_strcat(char *lee_dest, char *lee_src);
 int mwasi_strlen(char *lee_s);
 int mwasi_strcmp(char *lee_s1, char *lee_s2);
 char *mwasi_starts_with(const char *lee_haystack, const char *lee_needle);
+void execute_command(char *command);
 
 #endif /* SHELL_H */
